@@ -20,9 +20,14 @@ const AccountMenu = ({postId, postUserId}) => {
   const dispatch = useDispatch();
   const posts = useSelector(state => state.posts)
   const token = useSelector(state => state.token);
-  const friends = useSelector(state => state.user.friends)
-  const isFriend = friends.find((friend) => friend._id === postUserId);
+  // const { friends } = useSelector(state => state.user)
+  // const { requested } = useSelector(state => state.user)
+  const user = useSelector(state => state.user)
+  const isFriend = user.friends.find((friend) => friend === postUserId);
+  const isRequested = user.requested.find(friend => friend === postUserId)
+  console.log('isReq',isRequested)
   const { _id } = useSelector(state => state.user)
+
 
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -51,8 +56,8 @@ const AccountMenu = ({postId, postUserId}) => {
     }
   }
 
-  const addRemoveFriend =async () => {
-    const response = await fetch(`http://localhost:3001/users/${_id}/${postUserId}`,
+  const sendRemoveFriendRequest = async () => {
+    const response = await fetch(`http://localhost:3001/users/${_id}/${postUserId}/add`,
     {
       method: "PATCH",
       headers: {
@@ -64,7 +69,22 @@ const AccountMenu = ({postId, postUserId}) => {
     
     const updatedUser = await response.json();
     if(updatedUser){
-      console.log('user',updatedUser)
+      dispatch(setUser({data:updatedUser}))
+    }
+  }
+
+  const removeFriend = async () => {
+    const response = await fetch(`http://localhost:3001/users/${_id}/${postUserId}/remove`,
+    {
+      method:"PATCH",
+      headers:{
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          'Accept': 'application/json'
+      }
+    })
+    const updatedUser = await response.json();
+    if(updatedUser){
       dispatch(setUser({data:updatedUser}))
     }
   }
@@ -136,19 +156,42 @@ const AccountMenu = ({postId, postUserId}) => {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem 
+        {/* <MenuItem 
         onClick={() => {
           addRemoveFriend()
-          handleClose()
         }}>
-          <Avatar /> {isFriend? "Remove Friend" : "Add Friend" }
-        </MenuItem>
-        <MenuItem onClick={() => {
+         {isRequested &&  <Avatar/>}Remove Request
+         {isFriend != 'undefined' && !isRequested && <Avatar/>}Add Friend
+        </MenuItem> */}
+
+        { _id !== postUserId && isFriend !== 'undefined' && !isRequested && <MenuItem onClick={() => {
+          handleClose()
+          sendRemoveFriendRequest()
+        }}>
+        <Avatar/>Add Friend 
+        </MenuItem>}
+        
+        { _id !== postUserId && isRequested && <MenuItem onClick={() => {
+          handleClose()
+          sendRemoveFriendRequest()
+        }}>
+        <Avatar/> Remove Request 
+        </MenuItem>}
+
+        { _id !== postUserId && isFriend && <MenuItem onClick={() => {
+          handleClose()
+          removeFriend()
+        }}>
+        <Avatar/>Remove Friend 
+        </MenuItem>}
+
+        {postUserId === _id && <MenuItem onClick={() => {
           handleClose()
           deletePost()
         }}>
           <Avatar><DeleteOutlined/></Avatar>Delete
-        </MenuItem>
+        </MenuItem>}
+
         <Divider />
         <MenuItem onClick={handleClose}>
           <ListItemIcon>

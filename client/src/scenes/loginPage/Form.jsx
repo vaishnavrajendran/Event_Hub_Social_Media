@@ -184,7 +184,7 @@ const OTPSetting = (val) => {
     onSubmitProps.resetForm();
     if (loggedIn) {
       console.log('log',loggedIn)
-      if(loggedIn ==='Invalid credentials.')
+      if(loggedIn.msg === 'Invalid credentials.' || 'User does not exist. ')
         {setExcep(true)}
       dispatch(
         setLogin({
@@ -193,6 +193,10 @@ const OTPSetting = (val) => {
           allUsers: loggedIn.allUsers
         })
       );
+
+      if(loggedIn.user.isAdmin === true){
+        navigate('/dashboard')
+      } else
       navigate("/home");
     }
   };
@@ -433,6 +437,7 @@ const OTPSetting = (val) => {
             >
               {isLogin ? "LOGIN" : "REGISTER"}
             </Button>
+            {isLogin && excep && <Typography sx={{color:"red", textAlign:"center", fontSize:"1.5rem"}}>Invalid Credentials!!</Typography>}
             <Typography
               onClick={() => {
                 setPageType(isLogin ? "register" : "login");
@@ -447,11 +452,12 @@ const OTPSetting = (val) => {
                 },
               }}
             >
+              
               {isLogin
                 ? "Don't have an account? Sign Up here."
                 : "Already have an account? Login here."
                 }
-                {excep && <h6>Invalid Credentials</h6>}
+                
             </Typography>
           </Box>
           <div id='recaptcha-container'></div>

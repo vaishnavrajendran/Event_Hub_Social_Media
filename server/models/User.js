@@ -49,6 +49,25 @@ const UserSchema = new mongoose.Schema(
       type:Array,
       default: []
     },
+    blocked:{
+      type:Array
+    },
+    isHost:{
+      type:Number,
+      default:0
+    },
+    company:{
+      type:String
+    },
+    service:{
+      type:String
+    },
+    hostVerification:{
+      type:String
+    },
+    status:{
+      type:String
+    },
     location: String,
     occupation: String,
     viewedProfile: Number,

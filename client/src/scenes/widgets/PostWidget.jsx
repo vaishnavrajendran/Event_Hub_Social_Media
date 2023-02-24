@@ -34,6 +34,7 @@ const PostWidget = ({
   const loggedInUserId = useSelector((state) => state.user._id);
   const isLiked = Boolean(likes[loggedInUserId]);
   const likeCount = Object.keys(likes).length;
+  const { _id } = useSelector(state => state.user)
   
   const stateComments = useSelector(state => state.posts)
 
@@ -129,12 +130,12 @@ const PostWidget = ({
                                 <UserImage sx={{mt:"1rem", pb:"1rem"}} size="35px" image={com.picturePath} />
                                 <TimeAgo sx={{ color: main}} timestamp={com.createdAt}></TimeAgo>
                                 <Typography sx={{ color: main, m: "0.5rem 0", pl: "3.5rem" }}>{com.comment}</Typography>
-                                <DeleteOutline
+                                {_id === com.userId && <DeleteOutline
                                 sx={{marginLeft:"5.5rem"}}
                                 onClick = {() => {
                                   deleteComment(com._id)
                                 }}
-                                />
+                                />}
                                 </FlexBetween>
                                 <Divider sx={{ mt:"0.8rem"}}/>
                               </>

@@ -24,9 +24,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout } from "state";
 import { useNavigate } from "react-router-dom";
 import FlexBetween from "components/FlexBetween";
-import FullscreenDialog from '../widgets/NotificationDropdown'
-import FriendListWidget from "scenes/widgets/FriendListWidget"; 
 import AddFriends from "scenes/widgets/AddFriends";
+import ApplyHost from "components/Host/ApplyHost"
 
 const Navbar = () => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
@@ -112,6 +111,9 @@ const Navbar = () => {
               <MenuItem value={fullName}>
                 <Typography>{fullName}</Typography>
               </MenuItem>
+              <MenuItem >
+              <ApplyHost />
+              </MenuItem>
               <MenuItem onClick={() => dispatch(setLogout())}>Log Out</MenuItem>
             </Select>
           </FormControl>
@@ -188,6 +190,9 @@ const Navbar = () => {
               >
                 <MenuItem value={fullName}>
                   <Typography>{fullName}</Typography>
+                </MenuItem>
+                <MenuItem >
+                  <Typography>Be a Host</Typography>
                 </MenuItem>
                 <MenuItem onClick={() => dispatch(setLogout())}>
                   Log Out

@@ -29,8 +29,12 @@ export const createPost = async (req, res) => {
 /* READ */
 export const getFeedPosts = async (req, res) => {
   try {
+    const { userId } = req.params;
+    console.log('1111')
     const post = await Post.find();
-    res.status(200).json(post);
+    const user = await User.findById(userId);
+    const filteredDocs = post.filter(posts => !user.blocked.includes(posts.userId))
+    res.status(200).json(filteredDocs);
   } catch (err) {
     res.status(404).json({ message: err.message });
   }

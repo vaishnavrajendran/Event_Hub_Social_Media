@@ -1,5 +1,5 @@
 import mongoose, { Mongoose } from "mongoose";
-import User from "../models/User.js";
+import User from "./User.js";
 
 const postSchema = mongoose.Schema(
   {
@@ -47,7 +47,10 @@ const postSchema = mongoose.Schema(
           default:()=>Date.now()
       },
       }
-    ]
+    ],
+    blocked:{
+      type: Array
+    }
   },
   { timestamps: true }
 );

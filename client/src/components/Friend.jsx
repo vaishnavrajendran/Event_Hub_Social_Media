@@ -3,7 +3,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setFriends, setPost } from "state";
+import { setFriends, setPost, setUser } from "state";
 import FlexBetween from "./FlexBetween";
 import UserImage from "./UserImage";
 import MenuToggleButton from './MenuToggleButton'
@@ -23,20 +23,37 @@ const Friend = ({ friendId, name, subtitle, userPicturePath, postId }) => {
 
   const isFriend = friends.find((friend) => friend._id === friendId);
 
-  const patchFriend = async () => {
-    const response = await fetch(
-      `http://localhost:3001/users/${_id}/${friendId}`,
-      {
-        method: "PATCH",
-        headers: {
+  // const patchFriend = async () => {
+  //   const response = await fetch(
+  //     `http://localhost:3001/users/${_id}/${friendId}`,
+  //     {
+  //       method: "PATCH",
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //         "Content-Type": "application/json",
+  //       },
+  //     }
+  //   );
+  //   const data = await response.json();
+  //   dispatch(setFriends({ friends: data }));
+  // };
+
+  const removeFriend = async () => {
+    const response = await fetch(`http://localhost:3001/users/${_id}/${friendId}/remove`,
+    {
+      method:"PATCH",
+      headers:{
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
-        },
+          'Accept': 'application/json'
       }
-    );
-    const data = await response.json();
-    dispatch(setFriends({ friends: data }));
-  };
+    })
+    const updatedUser = await response.json();
+    if(updatedUser){
+      dispatch(setUser({data:updatedUser}))
+    }
+  }
+  
   return (
     <FlexBetween>
       <FlexBetween gap="1rem">
@@ -79,7 +96,7 @@ const Friend = ({ friendId, name, subtitle, userPicturePath, postId }) => {
         {isFriend ? (
             <PersonRemoveOutlined 
             sx={{ color: primaryDark }}
-            onClick={() => patchFriend()}
+            onClick={() => removeFriend()}
             />
           ) : (
             <MenuToggleButton postId={postId} postUserId={friendId} />

@@ -7,9 +7,10 @@ const PostsWidget = ({ userId, isProfile = false }) => {
   const dispatch = useDispatch();
   const posts = useSelector((state) => state.posts);
   const token = useSelector((state) => state.token);
+  const { _id } = useSelector(state => state.user)
 
   const getPosts = async () => {
-    const response = await fetch("http://localhost:3001/posts", {
+    const response = await fetch(`http://localhost:3001/posts/${_id}/get`, {
       method: "GET",
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -37,6 +38,7 @@ const PostsWidget = ({ userId, isProfile = false }) => {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  console.log('post',posts)
   return (
     <>
       {posts.map(
