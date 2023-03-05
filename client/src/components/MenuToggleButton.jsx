@@ -3,18 +3,18 @@ import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import PersonAdd from '@mui/icons-material/PersonAdd';
-import Settings from '@mui/icons-material/Settings';
-import Logout from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
+import ReportIcon from '@mui/icons-material/Report';
+import ExploreSharpIcon from '@mui/icons-material/ExploreSharp';
 import { DeleteOutlined } from "@mui/icons-material";
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { deletePosts, setUser } from 'state/index'
+import { deletePosts, setPost, setUser } from 'state/index';
+import { useNavigate } from 'react-router-dom';
+import Checkout from 'components/Checkout'
 
 const AccountMenu = ({postId, postUserId}) => {
   const dispatch = useDispatch();
@@ -25,9 +25,8 @@ const AccountMenu = ({postId, postUserId}) => {
   const user = useSelector(state => state.user)
   const isFriend = user.friends.find((friend) => friend === postUserId);
   const isRequested = user.requested.find(friend => friend === postUserId)
-  console.log('isReq',isRequested)
   const { _id } = useSelector(state => state.user)
-
+  const navigate = useNavigate();
 
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -89,6 +88,36 @@ const AccountMenu = ({postId, postUserId}) => {
     }
   }
 
+  const reportPost = async () => {
+    const response = await fetch(`http://localhost:3001/posts/${_id}/${postId}/report`,
+    {
+      method:"PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+    }
+    }).catch((error) => console.log(error.message))
+    const report = await response.json();
+    if(report){
+      console.log("report",report)
+      dispatch(setPost({post:report}));
+    }
+  }
+  // const config = {
+  //   headers: {
+  //       Authorization: `Bearer ${token}`,
+  //       'Content-Type': 'application/json'
+  //   }
+  // }
+  // const { data } = await axios.post(
+  //   `http://localhost:3001/posts/${postId}/report`,
+  //   config
+  // ).catch((error) => {
+  //   console.log(error.message)
+  // })
+  // if(data){
+  //   dispatch(setReport({data:data}));
+  // }
 
   // const patchFriend = async () => {
   //   const response = await fetch(
@@ -192,8 +221,25 @@ const AccountMenu = ({postId, postUserId}) => {
           <Avatar><DeleteOutlined/></Avatar>Delete
         </MenuItem>}
 
+        {postUserId === _id && <MenuItem onClick={() => {
+          // handleClose()
+          // navigate('/check-out')
+        }}>
+          <Avatar><ExploreSharpIcon/></Avatar>
+          <Checkout/>
+        </MenuItem>}
+
+
+        {postUserId !== _id && <MenuItem onClick={() => {
+          handleClose()
+          reportPost()
+        }}>           
         <Divider />
-        <MenuItem onClick={handleClose}>
+          <Avatar><ReportIcon/></Avatar>Report Post
+        </MenuItem>}
+
+
+        {/* <MenuItem onClick={handleClose}>
           <ListItemIcon>
             <PersonAdd fontSize="small" />
           </ListItemIcon>
@@ -210,7 +256,7 @@ const AccountMenu = ({postId, postUserId}) => {
             <Logout fontSize="small" />
           </ListItemIcon>
           Logout
-        </MenuItem>
+        </MenuItem> */}
       </Menu>
     </React.Fragment>
   );

@@ -20,6 +20,7 @@ import { storage } from "firebaseConfig";
 
 import { authentication } from "firebaseConfig";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { Troubleshoot } from "@mui/icons-material";
 
 
 const passwordRules = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}$/;
@@ -69,6 +70,7 @@ const Form = () => {
   const isRegister = pageType === "register";
   const [OTPSuccesfull, setSuccess] = useState(true)
   const [excep, setExcep] = useState(false)
+  const [isBlocked, setBlocked] = useState(false)
 
 let mob;
 let OTP;
@@ -96,7 +98,7 @@ const OTPSetting = (val) => {
       confirmationResult.confirm(otp).then((result) => {
         // User signed in successfully
         setSuccess(false)
-        const user = result.user;
+        // const user = result.user;
       }).catch((error) => {
         // User couldn't sign in (bad verification code?)
         // ...
@@ -155,7 +157,6 @@ const OTPSetting = (val) => {
 
     if (data) {
       setPageType("login");
-      console.log('datasssss',data);
       onSubmitProps.resetForm();
     }
   }
@@ -178,14 +179,15 @@ const OTPSetting = (val) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),
     }
-    
     );
     const loggedIn = await loggedInResponse.json();
     onSubmitProps.resetForm();
     if (loggedIn) {
       console.log('log',loggedIn)
-      if(loggedIn.msg === 'Invalid credentials.' || 'User does not exist. ')
-        {setExcep(true)}
+      if(loggedIn.msg === 'Invalid credentials.' || 'User does not exist. '){ setExcep(true) }
+
+      if(loggedIn.msg === 'Your account is temporarily blocked'){ setBlocked(true) }
+      
       dispatch(
         setLogin({
           user: loggedIn.user,
@@ -196,6 +198,8 @@ const OTPSetting = (val) => {
 
       if(loggedIn.user.isAdmin === true){
         navigate('/dashboard')
+      } else if (loggedIn.user.adminBlocked === true) {
+        navigate('/')
       } else
       navigate("/home");
     }
@@ -438,6 +442,7 @@ const OTPSetting = (val) => {
               {isLogin ? "LOGIN" : "REGISTER"}
             </Button>
             {isLogin && excep && <Typography sx={{color:"red", textAlign:"center", fontSize:"1.5rem"}}>Invalid Credentials!!</Typography>}
+            {isLogin && isBlocked && <Typography sx={{color:"red", textAlign:"center", fontSize:"1.5rem"}}>Your account is temporarily blocked</Typography>}
             <Typography
               onClick={() => {
                 setPageType(isLogin ? "register" : "login");

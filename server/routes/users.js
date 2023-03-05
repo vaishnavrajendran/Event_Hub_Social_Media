@@ -9,7 +9,8 @@ import {
   updateUser,
   beHost,
   acceptHost,
-  rejectHost
+  rejectHost,
+  reportUser
 } from "../controllers/users.js";
 import { verifyToken } from "../middleware/auth.js";
 
@@ -28,5 +29,6 @@ router.patch("/:userId/update", verifyToken, updateUser)
 router.patch("/:userId/behost", verifyToken, beHost)
 router.patch("/:userId/acceptHost", verifyToken, acceptHost)
 router.patch("/:userId/rejectHost", verifyToken, rejectHost)
+router.patch("/:userID/:id/report-user", verifyToken, reportUser)
 
 export default router;

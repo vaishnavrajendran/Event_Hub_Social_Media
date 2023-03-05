@@ -68,6 +68,12 @@ const UserSchema = new mongoose.Schema(
     status:{
       type:String
     },
+    adminBlocked:{
+      type:Boolean
+    },
+    isReported:{
+      type:Array
+    },
     location: String,
     occupation: String,
     viewedProfile: Number,

@@ -1,22 +1,24 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setPosts } from "state";
-import PostWidget from "./PostWidget";
+import { setReportedPosts } from "state";
+import PostWrap from "components/Report/PostWrap";
 
-const PostsWidget = ({ userId, isProfile = false }) => {
-  console.log('isss',isProfile)
+const PostsWrap = ({userId, isProfile = false}) => {
+
+
+
   const dispatch = useDispatch();
-  const posts = useSelector((state) => state.posts);
+  const posts = useSelector((state) => state.reportedPosts);
   const token = useSelector((state) => state.token);
   const { _id } = useSelector(state => state.user)
 
-  const getPosts = async () => {
-    const response = await fetch(`http://localhost:3001/posts/${_id}/get`, {
+  const getReportedPosts = async () => {
+    const response = await fetch(`http://localhost:3001/posts/get-reported`, {
       method: "GET",
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await response.json();
-    dispatch(setPosts({ posts: data }));
+    dispatch(setReportedPosts({ post: data }));
   };
 
   const getUserPosts = async () => {
@@ -28,20 +30,21 @@ const PostsWidget = ({ userId, isProfile = false }) => {
       }
     );
     const data = await response.json();
-    dispatch(setPosts({ posts: data }));
+    dispatch(setReportedPosts({ post: data }));
   };
+
 
   useEffect(() => {
     if (isProfile) {
       getUserPosts();
     } else {
-      getPosts();
+      getReportedPosts();
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps  
 
   return (
     <>
-      {posts.map(
+      {posts.filter(post => post.isReported.length !== 0).map(
         ({
           _id,
           userId,
@@ -53,8 +56,9 @@ const PostsWidget = ({ userId, isProfile = false }) => {
           userPicturePath,
           likes,
           comments,
+          adminBlocked
         }) => (
-          <PostWidget
+          <PostWrap
             key={_id}
             postId={_id}
             postUserId={userId}
@@ -65,6 +69,7 @@ const PostsWidget = ({ userId, isProfile = false }) => {
             userPicturePath={userPicturePath}
             likes={likes}
             comments={comments}
+            adminBlocked
           />
         )
       )}
@@ -72,4 +77,4 @@ const PostsWidget = ({ userId, isProfile = false }) => {
   );
 };
 
-export default PostsWidget;
+export default PostsWrap;

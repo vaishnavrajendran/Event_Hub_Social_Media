@@ -207,7 +207,6 @@ export const acceptHost = async (req, res) => {
     await user.save()
     const savedUser = await User.find()
     res.status(200).json(savedUser)
-    console.log("accept",savedUser)
   } catch (error) {
     console.log(error.message)
   }
@@ -215,7 +214,6 @@ export const acceptHost = async (req, res) => {
 
 export const rejectHost = async (req, res) => {
   try {
-    console.log('1234')
     const { userId } = req.params;
     const user = await User.findByIdAndUpdate(
       {_id:userId},
@@ -224,9 +222,17 @@ export const rejectHost = async (req, res) => {
     }})
     await user.save()
     const savedUser = await User.findById(userId)
-    console.log('saved',savedUser)
     res.status(200).json(savedUser)
   } catch (error) {
     console.log(error.message)
   }
+}
+
+export const reportUser = async (req, res) => {
+  const {userID, id} = req.params;
+  const user = await User.findByIdAndUpdate(
+    userID,
+    {$push:{isReported:id}},{new:true}
+  )
+  res.status(200).json(user)
 }

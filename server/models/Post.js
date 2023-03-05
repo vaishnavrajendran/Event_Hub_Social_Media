@@ -1,5 +1,4 @@
 import mongoose, { Mongoose } from "mongoose";
-import User from "./User.js";
 
 const postSchema = mongoose.Schema(
   {
@@ -50,6 +49,12 @@ const postSchema = mongoose.Schema(
     ],
     blocked:{
       type: Array
+    },
+    isReported:{
+      type: Array
+    },
+    adminBlocked:{
+      type:Boolean
     }
   },
   { timestamps: true }

@@ -12,13 +12,13 @@ import PersonAdd from '@mui/icons-material/PersonAdd';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
-import { DeleteOutlined, Report } from "@mui/icons-material";
+import { DeleteOutlined } from "@mui/icons-material";
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import BlockOutlinedIcon from '@mui/icons-material/BlockOutlined';
-import { setReportedUsers, setUser, updateAllUsers } from 'state';
+import { setPost, setPosts, updateReportedPosts } from 'state';
 
-export default function AccountMenu(userId) {
+export default function MenuReportToggle(postId, postUserId) {
   const dispatch = useDispatch();
   const posts = useSelector(state => state.posts)
   const token = useSelector(state => state.token);
@@ -32,47 +32,22 @@ export default function AccountMenu(userId) {
     setAnchorEl(null);
   };
 
-  const deletePost = async () => {
-    // let postIds = postId.postId;
-    // const response = await fetch(`http://localhost:3001/posts/delete-post/${postIds}`,
-    //   {
-    //     method: "PATCH",
-    //     headers: { Authorization: `Bearer ${token}` },
-    //   }
-    // )
-    // const target = await response.json();
-    // if(target){
-    //   const updatedPosts = posts.filter((post) => (
-    //     post._id  !== target
-    //   ))
-    //   dispatch(deletePosts({remainingPosts:updatedPosts}))
-    // }
-  }
-  const friends = useSelector((state) => state.user.friends);
-  const isFriend = friends.find((friend) => friend._id === userId);
-  const blocked = useSelector(state => state.user.blocked);
-  const isBlocked = blocked.find(friend => friend === userId.userId);
+  const reportedPosts = useSelector(state => state.reportedPosts);
+  const currPost = reportedPosts.filter(post => post._id === postId.postId)
 
-  const userID = userId.userId;
-  const blockUser = async (req, res) => {
-    const response = await fetch(`http://localhost:3001/users/${userID}/${_id}/block`,
+  const postID = postId.postId
+  const blockPost = async (req, res) => {
+    const response = await fetch(`http://localhost:3001/admin/${postID}/blockPost`,
     {
       method: "PATCH",
       headers: { Authorization: `Bearer ${token}` }, 
     });
     const data = await response.json();
-    dispatch(setUser({ data: data }));
+    dispatch(setPost({ post: data }));
+    dispatch(updateReportedPosts({ post : data}))
   }
 
-  const reportUser = async (req, res) => {
-    const response = await fetch(`http://localhost:3001/users/${userID}/${_id}/report-user`,
-    {
-      method:"PATCH",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const data = await response.json();
-    dispatch(updateAllUsers({user:data}))
-  }
+//   const blocked = useSelector(state => state.repo)
 
   return (
     <React.Fragment>
@@ -125,23 +100,17 @@ export default function AccountMenu(userId) {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={() => {
+        {/* <MenuItem onClick={() => {
           blockUser()
           handleClose()
         }}>
-          <Avatar><BlockOutlinedIcon/></Avatar> {isBlocked == undefined ? "Block User" : "Unblock User"}
-        </MenuItem>
+          <Avatar><BlockOutlinedIcon/></Avatar> Block User
+        </MenuItem> */}
         <MenuItem onClick={() => {
-          reportUser()
+          blockPost()
           handleClose()
         }}>
-          <Avatar><Report/></Avatar>Report User
-        </MenuItem>
-        <MenuItem onClick={() => {
-          deletePost()
-          handleClose()
-        }}>
-          <Avatar><DeleteOutlined/></Avatar>{isFriend ? "Remove Friend" : "Send Request" }
+          <Avatar><BlockOutlinedIcon/></Avatar> {currPost[0].adminBlocked === true ? "Unblock Post" : "Block Post"}
         </MenuItem>
         <Divider />
         <MenuItem onClick={handleClose}>
