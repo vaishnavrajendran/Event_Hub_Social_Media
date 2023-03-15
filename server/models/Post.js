@@ -1,4 +1,4 @@
-import mongoose, { Mongoose } from "mongoose";
+import mongoose from "mongoose";
 
 const postSchema = mongoose.Schema(
   {
@@ -55,6 +55,14 @@ const postSchema = mongoose.Schema(
     },
     adminBlocked:{
       type:Boolean
+    },
+    isPaymentCompleted:{
+      type:Number,
+      default:0
+    },
+    amount:{
+      type:Number,
+      default:0
     }
   },
   { timestamps: true }

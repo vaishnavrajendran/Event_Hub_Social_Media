@@ -8,7 +8,7 @@ import FlexBetween from "./FlexBetween";
 import UserImage from "./UserImage";
 import MenuToggleButton from './MenuToggleButton'
 
-const Friend = ({ friendId, name, subtitle, userPicturePath, postId }) => {
+const Friend = ({ friendId, name, subtitle, userPicturePath, postId, picturePath, description }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { _id } = useSelector((state) => state.user);
@@ -99,7 +99,7 @@ const Friend = ({ friendId, name, subtitle, userPicturePath, postId }) => {
             onClick={() => removeFriend()}
             />
           ) : (
-            <MenuToggleButton postId={postId} postUserId={friendId} />
+            <MenuToggleButton postId={postId} postUserId={friendId} picturePath={picturePath} description={description} />
           )}
       </IconButton>
     </FlexBetween>

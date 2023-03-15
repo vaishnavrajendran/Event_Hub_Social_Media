@@ -85,7 +85,9 @@ const Navbar = () => {
               <LightMode sx={{ color: dark, fontSize: "25px" }} />
             )}
           </IconButton>
+          <IconButton onClick={() => navigate("/chats")}>
           <Message sx={{ fontSize: "25px" }} />
+          </IconButton>
           {/* <FriendListWidget /> */}
           <AddFriends/>
           {/* <FullscreenDialog /> */}
@@ -165,7 +167,7 @@ const Navbar = () => {
                 <LightMode sx={{ color: dark, fontSize: "25px" }} />
               )}
             </IconButton>
-            <Message sx={{ fontSize: "25px" }} />
+            <Message sx={{ fontSize: "25px" }} onClick={() => navigate("/chats")} />
             {/* <FriendListWidget /> */}
             <AddFriends/>
             <Notifications sx={{ fontSize: "25px" }} />

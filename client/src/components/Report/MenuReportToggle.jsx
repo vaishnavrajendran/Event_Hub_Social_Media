@@ -12,11 +12,11 @@ import PersonAdd from '@mui/icons-material/PersonAdd';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
-import { DeleteOutlined } from "@mui/icons-material";
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import BlockOutlinedIcon from '@mui/icons-material/BlockOutlined';
-import { setPost, setPosts, updateReportedPosts } from 'state';
+import { setPost, updateReportedPosts } from 'state';
 
 export default function MenuReportToggle(postId, postUserId) {
   const dispatch = useDispatch();
@@ -47,7 +47,17 @@ export default function MenuReportToggle(postId, postUserId) {
     dispatch(updateReportedPosts({ post : data}))
   }
 
-//   const blocked = useSelector(state => state.repo)
+  const removeReport = async (req, res) => {
+    const response = await fetch(`http://localhost:3001/admin/${postID}/removeReport`,
+    {
+      method:"PATCH",
+      headers: { Authorization: `Bearer ${token}`},
+    });
+    const data = await response.json();
+    dispatch(setPost({ post: data }));
+    dispatch(updateReportedPosts({ post : data}))
+  }
+
 
   return (
     <React.Fragment>
@@ -111,6 +121,12 @@ export default function MenuReportToggle(postId, postUserId) {
           handleClose()
         }}>
           <Avatar><BlockOutlinedIcon/></Avatar> {currPost[0].adminBlocked === true ? "Unblock Post" : "Block Post"}
+        </MenuItem>
+        <MenuItem onClick={() => {
+          removeReport()
+          handleClose()
+        }}>
+          <Avatar><RemoveCircleOutlineIcon/></Avatar> Remove Report
         </MenuItem>
         <Divider />
         <MenuItem onClick={handleClose}>
