@@ -18,7 +18,6 @@ export const register = async (req, res) => {
       location,
       occupation,
     } = req.body;
-    console.log('bodyyyyy',req.body);
 
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
@@ -39,7 +38,6 @@ export const register = async (req, res) => {
       impressions: Math.floor(Math.random() * 10000),
     });
     const savedUser = await newUser.save();
-    console.log('saved',savedUser)
     res.status(201).json(savedUser);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -54,6 +52,7 @@ export const login = async (req, res) => {
     const user = await User.findOne({ email: email });
     const allUsers = await User.find()
     if (!user) return res.status(400).json({ msg: "User does not exist. " });
+    if(user.adminBlocked === true) return res.status(400).json({ msg: "Your account is temporarily blocked" });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ msg: "Invalid credentials. " });

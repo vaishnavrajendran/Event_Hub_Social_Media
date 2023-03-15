@@ -12,16 +12,17 @@ import PersonAdd from '@mui/icons-material/PersonAdd';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
-import { DeleteOutlined } from "@mui/icons-material";
+import { DeleteOutlined, Report } from "@mui/icons-material";
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { deletePosts } from 'state/index'
 import BlockOutlinedIcon from '@mui/icons-material/BlockOutlined';
+import { setReportedUsers, setUser, updateAllUsers } from 'state';
 
 export default function AccountMenu(userId) {
   const dispatch = useDispatch();
   const posts = useSelector(state => state.posts)
   const token = useSelector(state => state.token);
+  const { _id } = useSelector(state => state.user);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -47,9 +48,31 @@ export default function AccountMenu(userId) {
     //   dispatch(deletePosts({remainingPosts:updatedPosts}))
     // }
   }
-
   const friends = useSelector((state) => state.user.friends);
   const isFriend = friends.find((friend) => friend._id === userId);
+  const blocked = useSelector(state => state.user.blocked);
+  const isBlocked = blocked.find(friend => friend === userId.userId);
+
+  const userID = userId.userId;
+  const blockUser = async (req, res) => {
+    const response = await fetch(`http://localhost:3001/users/${userID}/${_id}/block`,
+    {
+      method: "PATCH",
+      headers: { Authorization: `Bearer ${token}` }, 
+    });
+    const data = await response.json();
+    dispatch(setUser({ data: data }));
+  }
+
+  const reportUser = async (req, res) => {
+    const response = await fetch(`http://localhost:3001/users/${userID}/${_id}/report-user`,
+    {
+      method:"PATCH",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await response.json();
+    dispatch(updateAllUsers({user:data}))
+  }
 
   return (
     <React.Fragment>
@@ -102,8 +125,17 @@ export default function AccountMenu(userId) {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleClose}>
-          <Avatar><BlockOutlinedIcon/></Avatar> Block User
+        <MenuItem onClick={() => {
+          blockUser()
+          handleClose()
+        }}>
+          <Avatar><BlockOutlinedIcon/></Avatar> {isBlocked == undefined ? "Block User" : "Unblock User"}
+        </MenuItem>
+        <MenuItem onClick={() => {
+          reportUser()
+          handleClose()
+        }}>
+          <Avatar><Report/></Avatar>Report User
         </MenuItem>
         <MenuItem onClick={() => {
           deletePost()

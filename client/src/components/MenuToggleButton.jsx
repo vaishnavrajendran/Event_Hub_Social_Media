@@ -3,26 +3,30 @@ import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import PersonAdd from '@mui/icons-material/PersonAdd';
-import Settings from '@mui/icons-material/Settings';
-import Logout from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
+import ReportIcon from '@mui/icons-material/Report';
+import ExploreSharpIcon from '@mui/icons-material/ExploreSharp';
 import { DeleteOutlined } from "@mui/icons-material";
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { deletePosts, setUser } from 'state/index'
+import { deletePosts, setPost, setUser } from 'state/index';
+import { useNavigate } from 'react-router-dom';
+import Checkout from 'components/Checkout'
 
 const AccountMenu = ({postId, postUserId}) => {
   const dispatch = useDispatch();
   const posts = useSelector(state => state.posts)
   const token = useSelector(state => state.token);
-  const friends = useSelector(state => state.user.friends)
-  const isFriend = friends.find((friend) => friend._id === postUserId);
+  // const { friends } = useSelector(state => state.user)
+  // const { requested } = useSelector(state => state.user)
+  const user = useSelector(state => state.user)
+  const isFriend = user.friends.find((friend) => friend === postUserId);
+  const isRequested = user.requested.find(friend => friend === postUserId)
   const { _id } = useSelector(state => state.user)
+  const navigate = useNavigate();
 
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -51,8 +55,8 @@ const AccountMenu = ({postId, postUserId}) => {
     }
   }
 
-  const addRemoveFriend =async () => {
-    const response = await fetch(`http://localhost:3001/users/${_id}/${postUserId}`,
+  const sendRemoveFriendRequest = async () => {
+    const response = await fetch(`http://localhost:3001/users/${_id}/${postUserId}/add`,
     {
       method: "PATCH",
       headers: {
@@ -64,11 +68,56 @@ const AccountMenu = ({postId, postUserId}) => {
     
     const updatedUser = await response.json();
     if(updatedUser){
-      console.log('user',updatedUser)
       dispatch(setUser({data:updatedUser}))
     }
   }
 
+  const removeFriend = async () => {
+    const response = await fetch(`http://localhost:3001/users/${_id}/${postUserId}/remove`,
+    {
+      method:"PATCH",
+      headers:{
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          'Accept': 'application/json'
+      }
+    })
+    const updatedUser = await response.json();
+    if(updatedUser){
+      dispatch(setUser({data:updatedUser}))
+    }
+  }
+
+  const reportPost = async () => {
+    const response = await fetch(`http://localhost:3001/posts/${_id}/${postId}/report`,
+    {
+      method:"PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+    }
+    }).catch((error) => console.log(error.message))
+    const report = await response.json();
+    if(report){
+      console.log("report",report)
+      dispatch(setPost({post:report}));
+    }
+  }
+  // const config = {
+  //   headers: {
+  //       Authorization: `Bearer ${token}`,
+  //       'Content-Type': 'application/json'
+  //   }
+  // }
+  // const { data } = await axios.post(
+  //   `http://localhost:3001/posts/${postId}/report`,
+  //   config
+  // ).catch((error) => {
+  //   console.log(error.message)
+  // })
+  // if(data){
+  //   dispatch(setReport({data:data}));
+  // }
 
   // const patchFriend = async () => {
   //   const response = await fetch(
@@ -136,21 +185,61 @@ const AccountMenu = ({postId, postUserId}) => {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem 
+        {/* <MenuItem 
         onClick={() => {
           addRemoveFriend()
-          handleClose()
         }}>
-          <Avatar /> {isFriend? "Remove Friend" : "Add Friend" }
-        </MenuItem>
-        <MenuItem onClick={() => {
+         {isRequested &&  <Avatar/>}Remove Request
+         {isFriend != 'undefined' && !isRequested && <Avatar/>}Add Friend
+        </MenuItem> */}
+
+        { _id !== postUserId && isFriend !== 'undefined' && !isRequested && <MenuItem onClick={() => {
+          handleClose()
+          sendRemoveFriendRequest()
+        }}>
+        <Avatar/>Add Friend 
+        </MenuItem>}
+        
+        { _id !== postUserId && isRequested && <MenuItem onClick={() => {
+          handleClose()
+          sendRemoveFriendRequest()
+        }}>
+        <Avatar/> Remove Request 
+        </MenuItem>}
+
+        { _id !== postUserId && isFriend && <MenuItem onClick={() => {
+          handleClose()
+          removeFriend()
+        }}>
+        <Avatar/>Remove Friend 
+        </MenuItem>}
+
+        {postUserId === _id && <MenuItem onClick={() => {
           handleClose()
           deletePost()
         }}>
           <Avatar><DeleteOutlined/></Avatar>Delete
-        </MenuItem>
+        </MenuItem>}
+
+        {postUserId === _id && <MenuItem onClick={() => {
+          // handleClose()
+          // navigate('/check-out')
+        }}>
+          <Avatar><ExploreSharpIcon/></Avatar>
+          <Checkout/>
+        </MenuItem>}
+
+
+        {postUserId !== _id && <MenuItem onClick={() => {
+          handleClose()
+          reportPost()
+        }}>           
         <Divider />
-        <MenuItem onClick={handleClose}>
+          <Avatar><ReportIcon/></Avatar>Report Post
+        </MenuItem>}
+
+
+        {/* <MenuItem onClick={handleClose}>
           <ListItemIcon>
             <PersonAdd fontSize="small" />
           </ListItemIcon>
@@ -167,7 +256,7 @@ const AccountMenu = ({postId, postUserId}) => {
             <Logout fontSize="small" />
           </ListItemIcon>
           Logout
-        </MenuItem>
+        </MenuItem> */}
       </Menu>
     </React.Fragment>
   );

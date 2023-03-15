@@ -1,5 +1,5 @@
 import {
-  ManageAccountsOutlined,
+  // ManageAccountsOutlined,
   EditOutlined,
   LocationOnOutlined,
   WorkOutlineOutlined,
@@ -12,7 +12,8 @@ import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ManageAccountsToggle from 'components/ManageAccountsToggle'
-import { IconButton } from "@mui/material";
+import ApplyHost from 'components/Host/ApplyHost'
+import EditUserDialog from "components/EditUserDialog";
 
 const UserWidget = ({ userId, picturePath }) => {
   const [user, setUser] = useState(null);
@@ -22,9 +23,15 @@ const UserWidget = ({ userId, picturePath }) => {
   const dark = palette.neutral.dark;
   const medium = palette.neutral.medium;
   const main = palette.neutral.main;
-  const { _id } = useSelector((state) => state.user)
-  const currentUser = useSelector((state) => state.user.firstName)
-  const currentUserLastName = useSelector((state) => state.user.lastName)
+  const currUser = useSelector((state) => state.user._id)
+  const logFirstName = useSelector((state) => state.user.firstName)
+  const logLastName = useSelector((state) => state.user.lastName)
+  const logJob = useSelector(state => state.user.occupation)
+  const logLocation = useSelector((state) => state.user.location)
+  const { status } = useSelector(state => state.user)
+  const { isHost } = useSelector(state => state.user)
+  // const currentUser = useSelector((state) => state.user.firstName)
+  // const currentUserLastName = useSelector((state) => state.user.lastName)
 
   const getUser = async () => {
     const response = await fetch(`http://localhost:3001/users/${userId}`, {
@@ -53,8 +60,8 @@ const UserWidget = ({ userId, picturePath }) => {
     friends,
   } = user;
 
-  const iscurrentUser = firstName === currentUser;
-  const iscurrentUserLastName = lastName === currentUserLastName;
+  // const iscurrentUser = firstName === currentUser;
+  // const iscurrentUserLastName = lastName === currentUserLastName;
 
   return (
     <WidgetWrapper>
@@ -77,15 +84,14 @@ const UserWidget = ({ userId, picturePath }) => {
                   cursor: "pointer",
                 },
               }}
-            >
-              {firstName} {lastName}
+            >{currUser === userId ?(`${logFirstName} ${logLastName}`):`${firstName} ${lastName}`}
             </Typography>
             <Typography color={medium}>{friends.length} friends</Typography>
           </Box>
         </FlexBetween>
-        {iscurrentUser && iscurrentUserLastName ?
+        {currUser === userId ?
         (
-          <ManageAccountsOutlined/>
+           <EditUserDialog/>
         ):(<ManageAccountsToggle userId={userId} />)}
       </FlexBetween>
 
@@ -95,11 +101,11 @@ const UserWidget = ({ userId, picturePath }) => {
       <Box p="1rem 0">
         <Box display="flex" alignItems="center" gap="1rem" mb="0.5rem">
           <LocationOnOutlined fontSize="large" sx={{ color: main }} />
-          <Typography color={medium}>{location}</Typography>
+          <Typography color={medium}>{currUser === userId ?(`${logLocation}`):`${location}`}</Typography>
         </Box>
         <Box display="flex" alignItems="center" gap="1rem">
           <WorkOutlineOutlined fontSize="large" sx={{ color: main }} />
-          <Typography color={medium}>{occupation}</Typography>
+          <Typography color={medium}>{currUser === userId ?(`${logJob}`):`${occupation}`}</Typography>
         </Box>
       </Box>
 
@@ -155,6 +161,14 @@ const UserWidget = ({ userId, picturePath }) => {
           <EditOutlined sx={{ color: main }} />
         </FlexBetween>
       </Box>
+      <Divider />
+
+          {/* FIFTH ROW FOR USER ONLY */}
+      <Box p="1rem 0">
+        {isHost === 0 ? <ApplyHost /> : "" }
+        <Typography>{status !== "" ? `Status: ${status}` : ""}</Typography>
+      </Box>
+
     </WidgetWrapper>
   );
 };

@@ -1,4 +1,5 @@
 import Post from "../models/Post.js";
+// import Report from "../models/Report.js";
 import User from "../models/User.js";
 
 /* CREATE */
@@ -29,8 +30,14 @@ export const createPost = async (req, res) => {
 /* READ */
 export const getFeedPosts = async (req, res) => {
   try {
+    const { userId } = req.params;
+    console.log('1111')
     const post = await Post.find();
-    res.status(200).json(post);
+    const user = await User.findById(userId);
+    const filteredDocs = post.filter(posts => !user.blocked.includes(posts.userId))
+    const reFilteredDocs = filteredDocs.filter(posts => posts.adminBlocked !== true);
+    console.log('re',reFilteredDocs)
+    res.status(200).json(reFilteredDocs);
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
@@ -65,7 +72,6 @@ export const likePost = async (req, res) => {
       { likes: post.likes },
       { new: true }
     );
-    console.log(updatedPost);
 
     res.status(200).json(updatedPost);
   } catch (err) {
@@ -77,13 +83,11 @@ export const addComment = async (req, res) => {
   try {
     const { _id } = req.params;
     const { postId } = req.params;
-    console.log('body',req.body)
     const id = postId;
     const saveComment = await Post.updateOne({_id:postId},
       {"$push":{
         "comments":{'userId':_id,'comment':req.body.comments,'picturePath':req.body.picturePath,'firstName':req.body.firstName,'lastName':req.body.lastName}
       }}) 
-      console.log('save',saveComment);
     if(saveComment){
       const post = await Post.findById(id);
       res.status(200).json(post);
@@ -121,4 +125,22 @@ export const deletePost = async (req, res) => {
   } catch (err) {
     console.log(err.message)
   }
+}
+
+export const reportPosts = async (req, res) => {
+  try {
+    console.log('reqsss',req.params)
+    const { _id, postId } = req.params;
+    const report = await Post.findByIdAndUpdate({_id:postId},
+      {"$push":{"isReported":_id}}, {new: true});
+    const savedReport = await report.save();
+    res.status(200).json(savedReport)
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
+export const getReportedPosts = async (req, res) => {
+  const posts = await Post.find({isReported:{ $exists: true, $ne:[]}}).exec();
+  res.status(200).json(posts)
 }
