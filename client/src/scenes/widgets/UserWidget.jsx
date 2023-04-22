@@ -166,6 +166,7 @@ const UserWidget = ({ userId, picturePath }) => {
           {/* FIFTH ROW FOR USER ONLY */}
       <Box p="1rem 0">
         {isHost === 0 ? <ApplyHost /> : "" }
+        {isHost === 1 ? <Typography style = {{cursor:'pointer'}} onClick={() => navigate("/manage-appointments")} fontWeight="500">Schedule Appointments</Typography> : ""}
         <Typography>{status !== "" ? `Status: ${status}` : ""}</Typography>
       </Box>
 

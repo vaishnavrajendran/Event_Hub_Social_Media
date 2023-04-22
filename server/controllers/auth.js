@@ -5,7 +5,6 @@ import User from "../models/User.js";
 /* REGISTER USER */
 export const register = async (req, res) => {
   try {
-    console.log('Here')
     const {
       firstName,
       lastName,
@@ -21,7 +20,6 @@ export const register = async (req, res) => {
 
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
-    console.log(passwordHash)
 
     const newUser = new User({
       firstName,
@@ -44,15 +42,17 @@ export const register = async (req, res) => {
   }
 };
 
-
 /* LOGGING IN */
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email: email });
-    const allUsers = await User.find()
+    const allUsers = await User.find();
     if (!user) return res.status(400).json({ msg: "User does not exist. " });
-    if(user.adminBlocked === true) return res.status(400).json({ msg: "Your account is temporarily blocked" });
+    if (user.adminBlocked === true)
+      return res
+        .status(400)
+        .json({ msg: "Your account is temporarily blocked" });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ msg: "Invalid credentials. " });

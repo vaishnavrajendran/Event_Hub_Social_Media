@@ -1,4 +1,4 @@
-import mongoose, { Mongoose } from "mongoose";
+import mongoose from "mongoose";
 
 const postSchema = mongoose.Schema(
   {
@@ -55,10 +55,45 @@ const postSchema = mongoose.Schema(
     },
     adminBlocked:{
       type:Boolean
+    },
+    isPaymentCompleted:{
+      type:Number,
+      default:0
+    },
+    amount:{
+      type:Number,
+      default:0
+    },
+    isViewed:{
+      type:Array
+    },
+    limit: {
+      type:Number,
+      default:0
     }
   },
   { timestamps: true }
 );
+
+// postSchema.pre('findByIdAndUpdate', function (next) {
+//   console.log("123")
+//   const post = this.getUpdate();
+//   if (post.amount === 140) {
+//   console.log("1")
+//     post.$set.limit = 50000;
+// } else if (post.amount === 260) {
+//   console.log("2")
+//   post.$set.limit = 100000;
+//   } else if (post.amount === 380) {
+//   console.log("3")
+//   post.$set.limit = 200000;
+//   } else if (post.amount === 500) {
+//   console.log("4")
+//   post.$set.limit = 300000;
+//   }
+//   next();
+// });
+
 
 const Post = mongoose.model("Post", postSchema);
 

@@ -7,25 +7,25 @@
   import FlexBetween from "components/FlexBetween";
   import UserImage from "components/UserImage";
   import WidgetWrapper from "components/WidgetWrapper";
-  import { useState } from "react";
+  import { useRef, useState } from "react";
   import { useDispatch, useSelector } from "react-redux";
   import axios from "axios";
   import { setPost, setPosts } from 'state';
   
   const CommentWidget = ({ picturePath, postId }) => {
     const dispatch = useDispatch();
-    const [comments, setComment] = useState("");
     const { palette } = useTheme();
     const { _id } = useSelector((state) => state.user);
     const token = useSelector((state) => state.token);
     const mediumMain = palette.neutral.mediumMain;
     const medium = palette.neutral.medium;
     const { firstName, lastName } = useSelector( state => state.user)
+    const textFieldRef = useRef(null);
   
     // const stateComments = useDispatch(state => state)
     const handlePost = async () => {
       const formData = new FormData();
-      formData.append("comments", comments);
+      formData.append("comments", textFieldRef.current.value);
       formData.append("picturePath", picturePath)
       formData.append("firstName", firstName);
       formData.append("lastName", lastName)
@@ -45,8 +45,8 @@
         console.log(error.message)
       })
       if(data){
-        console.log('daata',data)
         dispatch(setPost({post:data}))
+        textFieldRef.current.value = '';
       }
     };
   
@@ -56,8 +56,9 @@
           <UserImage sx={{mt:"1rem"}} size="30px" image={picturePath} />
           <InputBase
             placeholder="What's on your mind..."
-            onChange={(e) => setComment(e.target.value)}
-            value={comments}
+            inputRef={textFieldRef}
+            // onChange={(e) => setComment(e.target.value)}
+            // value={comments}
             name="comments"
             sx={{
                 width: "100%",

@@ -11,7 +11,6 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import {
-  Search,
   Message,
   DarkMode,
   LightMode,
@@ -20,6 +19,7 @@ import {
   Menu,
   Close,
 } from "@mui/icons-material";
+import Search from 'components/Search'
 import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout } from "state";
 import { useNavigate } from "react-router-dom";
@@ -62,15 +62,15 @@ const Navbar = () => {
         </Typography>
         {isNonMobileScreens && (
           <FlexBetween
-          backgroundColor={neutralLight}
+          // backgroundColor={neutralLight}
             borderRadius="9px"
             gap="3rem"
             padding="0.1rem 1.5rem"
           >
-            <InputBase placeholder="Search..." />
-            <IconButton>
+            {/* <InputBase placeholder="Search..." /> */}
+            {/* <IconButton> */}
               <Search />
-            </IconButton>
+            {/* </IconButton> */}
           </FlexBetween>
         )}
       </FlexBetween>
@@ -85,7 +85,9 @@ const Navbar = () => {
               <LightMode sx={{ color: dark, fontSize: "25px" }} />
             )}
           </IconButton>
+          <IconButton onClick={() => navigate("/chats")}>
           <Message sx={{ fontSize: "25px" }} />
+          </IconButton>
           {/* <FriendListWidget /> */}
           <AddFriends/>
           {/* <FullscreenDialog /> */}
@@ -165,7 +167,7 @@ const Navbar = () => {
                 <LightMode sx={{ color: dark, fontSize: "25px" }} />
               )}
             </IconButton>
-            <Message sx={{ fontSize: "25px" }} />
+            <Message sx={{ fontSize: "25px" }} onClick={() => navigate("/chats")} />
             {/* <FriendListWidget /> */}
             <AddFriends/>
             <Notifications sx={{ fontSize: "25px" }} />

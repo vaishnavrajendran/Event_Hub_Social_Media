@@ -6,7 +6,8 @@ const initialState = {
   token: null,
   posts: [],
   reportedPosts: [],
-  reportedUsers: []
+  reportedUsers: [],
+  userPosts:[]
 };
 
 export const authSlice = createSlice({
@@ -16,7 +17,7 @@ export const authSlice = createSlice({
     setMode: (state) => {
       state.mode = state.mode === "light" ? "dark" : "light";
     },
-      setLogin: (state, action) => {
+    setLogin: (state, action) => {
       state.user = action.payload.user;
       state.token = action.payload.token;
       state.allUsers = action.payload.allUsers;
@@ -25,10 +26,10 @@ export const authSlice = createSlice({
       state.allUsers = action.payload.allUsers;
     },
     updateAllUsers: (state, action) => {
-      const updatedUsers = state.allUsers.map(user => {
-        if(user._id === action.payload.user._id) return action.payload.user;
+      const updatedUsers = state.allUsers.map((user) => {
+        if (user._id === action.payload.user._id) return action.payload.user;
         return user;
-      })
+      });
       state.allUsers = updatedUsers;
     },
     setLogout: (state) => {
@@ -38,9 +39,6 @@ export const authSlice = createSlice({
     setFriends: (state, action) => {
       if (state.user) {
         state.user.friends = action.payload.friends;
-        // state.user.friends = action.payload.friends;
-        // state.user.requests = action.payload.requests;
-        // state.user.requested = action.payload.requested;
       } else {
         console.error("user friends non-existent :(");
       }
@@ -55,6 +53,9 @@ export const authSlice = createSlice({
       });
       state.posts = updatedPosts;
     },
+    setUserPosts: (state, action) => {
+      state.userPosts = action.payload
+    },
     deletePosts: (state, action) => {
       state.posts = action.payload.remainingPosts;
     },
@@ -62,18 +63,32 @@ export const authSlice = createSlice({
       state.user = action.payload.data;
     },
     setReportedPosts: (state, action) => {
-      state.reportedPosts = action.payload.post
+      state.reportedPosts = action.payload.post;
     },
     updateReportedPosts: (state, action) => {
-      const updatedPosts = state.reportedPosts.map(post => {
-        if(post._id === action.payload.post._id) return action.payload.post;
-        return post
-      })
+      const updatedPosts = state.reportedPosts.map((post) => {
+        if (post._id === action.payload.post._id) return action.payload.post;
+        return post;
+      });
       state.reportedPosts = updatedPosts;
-    }
+    },
   },
 });
 
-export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost, setUser, setComments, deletePosts, setAllUsers, setReportedPosts, updateReportedPosts, updateAllUsers } =
-  authSlice.actions;
+export const {
+  setMode,
+  setLogin,
+  setLogout,
+  setFriends,
+  setPosts,
+  setPost,
+  setUser,
+  setComments,
+  deletePosts,
+  setAllUsers,
+  setReportedPosts,
+  updateReportedPosts,
+  setUserPosts,
+  updateAllUsers,
+} = authSlice.actions;
 export default authSlice.reducer;

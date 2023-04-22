@@ -4,18 +4,19 @@ import { setPosts } from "state";
 import PostWidget from "./PostWidget";
 
 const PostsWidget = ({ userId, isProfile = false }) => {
-  console.log('isss',isProfile)
   const dispatch = useDispatch();
   const posts = useSelector((state) => state.posts);
   const token = useSelector((state) => state.token);
   const { _id } = useSelector(state => state.user)
 
   const getPosts = async () => {
+    console.log("getPosts");
     const response = await fetch(`http://localhost:3001/posts/${_id}/get`, {
       method: "GET",
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await response.json();
+    console.log("datas",data)
     dispatch(setPosts({ posts: data }));
   };
 

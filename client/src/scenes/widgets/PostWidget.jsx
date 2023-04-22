@@ -5,17 +5,26 @@ import {
   FavoriteOutlined,
   ShareOutlined,
 } from "@mui/icons-material";
-import { Box, Button, Divider, IconButton, InputBase, Typography, useTheme } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Divider,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import FlexBetween from "components/FlexBetween";
 import Friend from "components/Friend";
-import UserImage from "components/UserImage";
 import WidgetWrapper from "components/WidgetWrapper";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPost } from "state";
 import CommentWidget from "./CommentWidget";
 import TimeAgo from "./TImeAgo";
-import axios from "axios";
+import IconButton from "@mui/material/IconButton";
 
 const PostWidget = ({
   postId,
@@ -34,9 +43,9 @@ const PostWidget = ({
   const loggedInUserId = useSelector((state) => state.user._id);
   const isLiked = Boolean(likes[loggedInUserId]);
   const likeCount = Object.keys(likes).length;
-  const { _id } = useSelector(state => state.user)
-  
-  const stateComments = useSelector(state => state.posts)
+  const { _id, firstName } = useSelector((state) => state.user);
+
+  const stateComments = useSelector((state) => state.posts);
 
   const { palette } = useTheme();
   const main = palette.neutral.main;
@@ -56,27 +65,31 @@ const PostWidget = ({
   };
 
   const deleteComment = async (comm_id) => {
-    const response = await fetch(`http://localhost:3001/posts/${comm_id}/${postId}/delete-comment`, {
-      method: "PATCH",
-      headers: { Authorization: `Bearer ${token}` },
-    }).catch((err) => console.log(err.message))
+    const response = await fetch(
+      `http://localhost:3001/posts/${comm_id}/${postId}/delete-comment`,
+      {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    ).catch((err) => console.log(err.message));
     const updatedPost = await response.json();
-    if(updatedPost){
+    if (updatedPost) {
       dispatch(setPost({ post: updatedPost }));
     }
-  }
+  };
 
-
-  const userInfo = useSelector(state => state.user)
+  const userInfo = useSelector((state) => state.user);
   return (
     <WidgetWrapper m="2rem 0">
       <Friend
         friendId={postUserId}
-        postId = {postId}
+        postId={postId}
         name={name}
         subtitle={location}
         userPicturePath={userPicturePath}
         postUserId={postUserId}
+        description={description}
+        picturePath={picturePath}
       />
       <Typography color={main} sx={{ mt: "1rem" }}>
         {description}
@@ -115,15 +128,18 @@ const PostWidget = ({
           <ShareOutlined />
         </IconButton>
       </FlexBetween>
-      {isComments && <CommentWidget picturePath={userInfo.picturePath} postId={postId} />}
       {isComments && (
-        <Box >
-          {stateComments.filter(arr => arr._id === postId)
+        <CommentWidget picturePath={userInfo.picturePath} postId={postId} />
+      )}
+      {isComments && (
+        <Box>
+          {stateComments
+            .filter((arr) => arr._id === postId)
             .map((comm, i) => (
               <WidgetWrapper>
-                          <FlexBetween gap="1rem" >
-                          <Box key={i}>
-                              {comm.comments.map((com) => (
+                <FlexBetween gap="1rem">
+                  <Box key={i}>
+                    {/* {comm.comments.map((com) => (
                               <>
                                 <Typography sx={{ color: main, marginLeft:"4rem", mb:"-0.4rem"}}>{com.firstName}</Typography>
                                 <FlexBetween paddingLeft="1.5rem" marginTop="-1rem">
@@ -139,10 +155,56 @@ const PostWidget = ({
                                 </FlexBetween>
                                 <Divider sx={{ mt:"0.8rem"}}/>
                               </>
-                                  ))}
-                          </Box>
-                          </FlexBetween>
-                    </WidgetWrapper>
+                                  ))} */}
+                    <List
+                      sx={{
+                        width: "100%",
+                        maxWidth: 360,
+                        bgcolor: "background.paper",
+                      }}
+                    >
+                      {comm.comments.map((com) => (
+                        <>
+                          <ListItem
+                            alignItems="flex-start"
+                            secondaryAction={
+                              <IconButton edge="end" aria-label="delete">
+                                {_id === com.userId && <DeleteOutline onClick = {() => {
+                                  deleteComment(com._id)
+                                }} />}
+                              </IconButton>
+                            }
+                          >
+                            <ListItemAvatar>
+                              <Avatar alt="Remy Sharp" src={com.picturePath} />
+                            </ListItemAvatar>
+                            <ListItemText
+                              primary={`${com.firstName} ${com.lastName}`}
+                              secondary={
+                                <React.Fragment>
+                                  <Typography
+                                    sx={{ display: "inline" }}
+                                    component="span"
+                                    variant="body2"
+                                    color="text.primary"
+                                  >
+                                    {`to ${firstName}  -  ${com.comment}`}
+                                  </Typography>
+                                  <TimeAgo
+                                    sx={{ color: main }}
+                                    timestamp={com.createdAt}
+                                  ></TimeAgo>
+                                </React.Fragment>
+                              }
+                            />
+                          </ListItem>
+                          <Divider variant="inset" component="li" />
+                        </>
+                      ))}
+                    </List>
+                  </Box>
+                </FlexBetween>
+              </WidgetWrapper>
             ))}
         </Box>
       )}

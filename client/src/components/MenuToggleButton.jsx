@@ -14,9 +14,8 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { deletePosts, setPost, setUser } from 'state/index';
 import { useNavigate } from 'react-router-dom';
-import Checkout from 'components/Checkout'
 
-const AccountMenu = ({postId, postUserId}) => {
+const AccountMenu = ({postId, postUserId, picturePath, description}) => {
   const dispatch = useDispatch();
   const posts = useSelector(state => state.posts)
   const token = useSelector(state => state.token);
@@ -27,7 +26,7 @@ const AccountMenu = ({postId, postUserId}) => {
   const isRequested = user.requested.find(friend => friend === postUserId)
   const { _id } = useSelector(state => state.user)
   const navigate = useNavigate();
-
+ 
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -39,8 +38,7 @@ const AccountMenu = ({postId, postUserId}) => {
   };
 
   const deletePost = async () => {
-    let postIds = postId.postId;
-    const response = await fetch(`http://localhost:3001/posts/delete-post/${postIds}`,
+    const response = await fetch(`http://localhost:3001/posts/delete-post/${postId}`,
       {
         method: "PATCH",
         headers: { Authorization: `Bearer ${token}` },
@@ -222,13 +220,22 @@ const AccountMenu = ({postId, postUserId}) => {
         </MenuItem>}
 
         {postUserId === _id && <MenuItem onClick={() => {
-          // handleClose()
-          // navigate('/check-out')
+          handleClose()
+          navigate('/checkout',{state:{
+            picture:picturePath, desc:description, postID:postId
+          }})
         }}>
-          <Avatar><ExploreSharpIcon/></Avatar>
-          <Checkout/>
+          <Avatar><ExploreSharpIcon/></Avatar>Boost Post
         </MenuItem>}
 
+        {postUserId === _id && <MenuItem onClick={() => {
+          handleClose()
+          navigate(`/edit-post/${postId}`,{state:{
+            picture:picturePath, desc:description, postID:postId
+          }})
+        }}>
+          <Avatar><ExploreSharpIcon/></Avatar>Edit Post
+        </MenuItem>}
 
         {postUserId !== _id && <MenuItem onClick={() => {
           handleClose()

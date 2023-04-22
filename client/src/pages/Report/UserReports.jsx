@@ -20,10 +20,10 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 import { useDispatch, useSelector } from "react-redux";
-import { setAllUsers, updateAllUsers } from "state";
+import { updateAllUsers } from "state";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { dataref } from "firebaseConfig";
+// import { dataref } from "firebaseConfig";
 
 function createData(name, UserName, Total_Reports, Actions) {
   return {
@@ -257,6 +257,15 @@ export default function EnhancedTable() {
       isBlocked:item.adminBlocked
     }));
 
+  const removeReport = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:3001/admin/${id}/blockUser`,
+      
+      )
+    } catch (error) {
+      console.log(error.message)
+    }
+  }
 
  
   const blockUser = async (id) => {
@@ -385,13 +394,19 @@ export default function EnhancedTable() {
 
                       <TableCell align="right">
                         <Button
-                          variant="contained"
+                          // variant="contained"
+                          onClick={() => removeReport(row.id)}
+                        >
+                          Remove Report
+                        </Button>
+                        <Button
+                          // variant="contained"
                           onClick={() => navigate(`/profiles/${row.id}`)}
                         >
                           View Profile
                         </Button>
                         <Button
-                          variant="contained"
+                          // variant="contained"
                           onClick={() => blockUser(row.id)}
                         >
                           {row.isBlocked === true ? "UnBlock User" : "Block User"}
