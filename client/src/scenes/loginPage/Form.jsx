@@ -227,7 +227,6 @@ const Form = () => {
   };
 
   const handleFormSubmit = async (values, onSubmitProps) => {
-    console.log("handle");
     if (isLogin) await login(values, onSubmitProps);
     if (isRegister) await register(values, onSubmitProps);
   };
@@ -464,7 +463,6 @@ const Form = () => {
               {loading && <Loading />}
             </div>
           </Box>
-
           <Box>
             <Button
               id="register"

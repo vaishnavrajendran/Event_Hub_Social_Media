@@ -36,6 +36,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: relative;
+    z-index: 1;
   }
   
   .chatMessageInput {
@@ -71,6 +73,14 @@
     font-size: 50px;
     color: rgb(224, 220, 220);
     cursor: default;
+  }
+
+ 
+  .emoji {
+    position: absolute;
+    bottom: 0;
+    right: 3;
+    z-index: 2;
   }
   
   @media screen and (max-width: 768px) {

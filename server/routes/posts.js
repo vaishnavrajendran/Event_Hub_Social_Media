@@ -1,5 +1,5 @@
 import express from "express";
-import { getFeedPosts, getUserPosts, likePost, addComment, deleteComment, deletePost, reportPosts, getReportedPosts, paymentSuccess } from "../controllers/posts.js";
+import { getFeedPosts, getUserPosts, likePost, addComment, deleteComment, deletePost, reportPosts, getReportedPosts, paymentSuccess, userViewed, editPost } from "../controllers/posts.js";
 import { verifyToken } from "../middleware/auth.js";
 import { stripePayment } from "../controllers/stripe.js"
 
@@ -19,7 +19,9 @@ router.patch("/:id/like", verifyToken, likePost);
 router.patch("/:comm_id/:postId/delete-comment", verifyToken, deleteComment)
 router.patch("/delete-post/:postIds", verifyToken, deletePost);
 router.patch("/:_id/:postId/report", verifyToken, reportPosts);
-router.patch("/:postId/paymentSuccess", verifyToken, paymentSuccess)
+router.patch("/:postId/:amount/paymentSuccess", verifyToken, paymentSuccess)
+router.patch("/user/viewed/:id",userViewed)
+router.patch("/:postId/edit-post",verifyToken, editPost)
 
 
 export default router;

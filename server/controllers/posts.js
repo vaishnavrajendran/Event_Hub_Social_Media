@@ -30,6 +30,7 @@ export const createPost = async (req, res) => {
 /* READ */
 export const getFeedPosts = async (req, res) => {
   try {
+    console.log("1");
     const { userId } = req.params;
     const post = await Post.find();
     const user = await User.findById(userId);
@@ -37,11 +38,20 @@ export const getFeedPosts = async (req, res) => {
       (posts) => !user.blocked.includes(posts.userId)
     );
     const reFilteredDocs = filteredDocs.filter(
-      (posts) => posts.adminBlocked !== true
+      (posts) => {
+        if(posts?.isViewed.length <= posts?.limit){
+          console.log("if");
+          return posts.adminBlocked !== true && !posts?.isViewed?.includes(userId) && posts.isPaymentCompleted == 0
+        } else {
+          console.log("else");
+          return posts.adminBlocked !== true && !posts?.isViewed?.includes(userId)
+        }
+      } 
     );
     const sortedDocs = reFilteredDocs.sort(
       (a, b) => b.isPaymentCompleted - a.isPaymentCompleted
     );
+    console.log("sorted",sortedDocs);
     res.status(200).json(sortedDocs);
   } catch (err) {
     res.status(404).json({ message: err.message });
@@ -50,6 +60,7 @@ export const getFeedPosts = async (req, res) => {
 
 export const getUserPosts = async (req, res) => {
   try {
+    log("123")
     const { userId } = req.params;
     const post = await Post.find({ userId });
     res.status(200).json(post);
@@ -174,10 +185,19 @@ export const paymentSuccess = async (req, res) => {
   try {
     const { postId } = req.params;
     const { amount } = req.params;
-    console.log(req.params)
+    let limit;
+    if (amount == 140) {
+      limit = 50000;
+    } else if (amount == 260) {
+      limit = 100000;
+      } else if (amount == 380) {
+      limit = 200000;
+      } else if (amount == 500) {
+      limit = 300000;
+      }
     const post = await Post.findByIdAndUpdate(
       { _id: postId },
-      { $set: { isPaymentCompleted: 1, amount:amount } },
+      { $set: { isPaymentCompleted: 1, amount:amount, limit:limit } },
       { new: true }
     );
     res.status(201).json(post);
@@ -185,3 +205,23 @@ export const paymentSuccess = async (req, res) => {
     console.log(error.message);
   }
 };
+
+export const userViewed = async (req, res) => {
+  const { id } = req.params;
+  const findPosts = await Post.updateMany({isPaymentCompleted:1},
+    {$addToSet:{isViewed:id}})
+  // console.log("find",findPosts);
+}
+
+export const editPost = async (req, res) => {
+  try {
+    const post = await Post.findByIdAndUpdate(
+      { _id: req.params.postId },
+      { $set: { description:req.body.description, picturePath:req.body.picturePath } },
+      { new: true }
+    );
+    res.status(200).json({post});
+  } catch (error) {
+    console.log(error.message);
+  }
+}

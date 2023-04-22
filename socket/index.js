@@ -56,7 +56,7 @@ const io = require("socket.io")(8900, {
   console.log("user",users)
   
   const addUser = (userId, socketId) => {
-    console.log("userID",userId);
+    console.log("userID",userId); 
     console.log("socketId",socketId);
     !users.some((user) => user.userId === userId) &&
       users.push({ userId, socketId });
@@ -86,8 +86,9 @@ const io = require("socket.io")(8900, {
     //send and get message
     socket.on("sendMessage", ({ senderId, receiverId, text }) => {
       const user = getUser(receiverId);
-      console.log("user",users)
-      io.to(user.socketId).emit("getMessage", {
+      console.log("user",user)
+      console.log("receiver",receiverId)
+      io.to(user?.socketId).emit("getMessage", {
         senderId,
         text,
       }); 

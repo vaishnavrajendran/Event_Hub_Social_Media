@@ -9,6 +9,8 @@ import PaymentCompleted from "pages/PaymentCompleted"
 // import Chat from "pages/Chat"
 import InputFields from "pages/ScheduleAppointments/InputFields";
 import Messenger from "pages/messeger/Messenger";
+import EditUser from "pages/EditUser";
+import BoostPostDetails from "pages/BoostPostDetails"
 
 const UserRoutes = () => {
   const isAuth = Boolean(useSelector((state) => state.token));
@@ -39,6 +41,14 @@ const UserRoutes = () => {
         <Route 
         path="/manage-appointments"
         element={isAuth ? <InputFields/> : <Navigate to="/" />}
+        />
+        <Route 
+        path="/edit-post/:postId"
+        element={isAuth ? <EditUser/> : <Navigate to="/" />}
+        />
+        <Route 
+        path="/postViews"
+        element={isAuth ? <BoostPostDetails/> : <Navigate to="/" />}
         />
       </Routes>
     </div>

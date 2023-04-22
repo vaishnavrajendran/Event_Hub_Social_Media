@@ -6,10 +6,18 @@ import MyPostWidget from "scenes/widgets/MyPostWidget";
 import PostsWidget from "scenes/widgets/PostsWidget";
 import AdvertWidget from "scenes/widgets/AdvertWidget";
 import FriendListWidget from "scenes/widgets/FriendListWidget";
+import axios from "axios";
 
 const HomePage = () => {
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
   const { _id, picturePath } = useSelector((state) => state.user || {});
+
+  const setUserViewed = async (req, res) => {
+    await axios.patch(`http://localhost:3001/posts/user/viewed/${_id}`);
+  };
+  setTimeout(() => {
+    setUserViewed();
+  }, 10000);
 
   return (
     <Box>

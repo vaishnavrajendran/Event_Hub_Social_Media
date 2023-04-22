@@ -7,6 +7,7 @@ const initialState = {
   posts: [],
   reportedPosts: [],
   reportedUsers: [],
+  userPosts:[]
 };
 
 export const authSlice = createSlice({
@@ -52,6 +53,9 @@ export const authSlice = createSlice({
       });
       state.posts = updatedPosts;
     },
+    setUserPosts: (state, action) => {
+      state.userPosts = action.payload
+    },
     deletePosts: (state, action) => {
       state.posts = action.payload.remainingPosts;
     },
@@ -84,6 +88,7 @@ export const {
   setAllUsers,
   setReportedPosts,
   updateReportedPosts,
+  setUserPosts,
   updateAllUsers,
 } = authSlice.actions;
 export default authSlice.reducer;

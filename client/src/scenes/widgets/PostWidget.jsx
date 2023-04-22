@@ -65,7 +65,6 @@ const PostWidget = ({
   };
 
   const deleteComment = async (comm_id) => {
-    console.log("coomm",comm_id);
     const response = await fetch(
       `http://localhost:3001/posts/${comm_id}/${postId}/delete-comment`,
       {

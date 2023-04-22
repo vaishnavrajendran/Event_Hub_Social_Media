@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Stripe from "scenes/widgets/Stripe/Stripe";
 import SelectBoost from "./SelectBoost";
 
 const BoostPost = () => {
   const { state } = useLocation();
+  console.log("st:",state)
   let tax = 20;
   const [childData, setChildData] = useState("");
   const [amount, setAmount] = useState(120)
   const [purchase, setPurchase] = useState(false)
+  console.log("purchase",purchase);
   const dataFromChild = (data) => {
     setChildData(data);
     if(data == 50000) setAmount(120);
@@ -16,6 +18,9 @@ const BoostPost = () => {
     if(data == 200000) setAmount(3*120);
     if(data == 300000) setAmount(4*120);
   }
+  useEffect(() => {
+    console.log("pur",purchase);
+  },[purchase]);
   return (
     <div>
       <div class="min-w-screen min-h-screen bg-gray-50 py-5">

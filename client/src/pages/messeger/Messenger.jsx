@@ -6,7 +6,11 @@ import Message from "components/Message/Message";
 import ChatOnline from "components/ChatOnline/ChatOnline";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import io from "socket.io-client"
+import io from "socket.io-client";
+import EmojiPicker from "emoji-picker-react";
+import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
+import { EmojiStyle } from 'emoji-picker-react';
+
 // import FriendListWidget from "scenes/widgets/FriendListWidget";
 
 const Messenger = () => {
@@ -16,42 +20,46 @@ const Messenger = () => {
   const [newMessage, setNewMessage] = useState("");
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [open, setOpen] = useState(false);
   const socket = useRef();
   const { _id } = useSelector((state) => state.user);
-  const { user }= useSelector(state => state);
+  const { user } = useSelector((state) => state);
   const scrollRef = useRef();
 
   useEffect(() => {
     socket.current = io("ws://localhost:8900");
-    socket.current.on("getMessage", data => {
-        setArrivalMessage({
-            sender:data.senderId,
-            text:data.text,
-            createdAt:Date.now(),
-        })
-    })
-  },[])
+    socket.current.on("getMessage", (data) => {
+      setArrivalMessage({
+        sender: data.senderId,
+        text: data.text,
+        createdAt: Date.now(),
+      });
+    });
+  }, []);
 
   useEffect(() => {
     arrivalMessage &&
-    currentChat?.members.includes(arrivalMessage.sender) &&
-    setMessages((prev) => [...prev, arrivalMessage]);
-  },[arrivalMessage, currentChat])
+      currentChat?.members.includes(arrivalMessage.sender) &&
+      setMessages((prev) => [...prev, arrivalMessage]);
+  }, [arrivalMessage, currentChat]);
 
   useEffect(() => {
-    console.log("vilikk")
-    socket.current.emit("addUser",_id)
+    console.log("vilikk");
+    socket.current.emit("addUser", _id);
     socket.current.on("getUsers", (users) => {
-        const matchedArray = user.friends.filter(obj1 => {
-            const matchedObj = users.find(obj2 => obj2.userId === obj1._id);
-            return matchedObj !== undefined;
-        })
-        setOnlineUsers(matchedArray);
-        // setOnlineUsers(user.friends.filter((f) => {users.some((u) => u.userId === f._id )
-        // }));
-    })
-  },[user])
+      const matchedArray = user.friends.filter((obj1) => {
+        const matchedObj = users.find((obj2) => obj2.userId === obj1._id);
+        return matchedObj !== undefined;
+      });
+      setOnlineUsers(matchedArray);
+      // setOnlineUsers(user.friends.filter((f) => {users.some((u) => u.userId === f._id )
+      // }));
+    });
+  }, [user]);
 
+  const onEmojiClick = (emojiClickData, event) => {
+    setNewMessage(prevInput => prevInput + emojiClickData.emoji);
+  }
 
   useEffect(() => {
     const getConversations = async (req, res) => {
@@ -89,13 +97,13 @@ const Messenger = () => {
       conversationId: currentChat._id,
     };
 
-    const receiverId = currentChat.members.find(member => member !== _id)
+    const receiverId = currentChat.members.find((member) => member !== _id);
 
     socket.current.emit("sendMessage", {
-        senderId: _id,
-        receiverId,
-        text:newMessage
-    })
+      senderId: _id,
+      receiverId,
+      text: newMessage,
+    });
 
     try {
       const res = await axios
@@ -108,11 +116,9 @@ const Messenger = () => {
     }
   };
 
-
   useEffect(() => {
-    scrollRef.current?.scrollIntoView({behaviour:"smooth"})
-  },[messages])
-
+    scrollRef.current?.scrollIntoView({ behaviour: "smooth" });
+  }, [messages]);
 
   return (
     <>
@@ -153,6 +159,15 @@ const Messenger = () => {
                     onChange={(e) => setNewMessage(e.target.value)}
                     value={newMessage}
                   ></textarea>
+                  <div className="emoji">
+                    {open && <EmojiPicker onEmojiClick={onEmojiClick} emojiStyle={EmojiStyle.GOOGLE} />}
+                  </div>
+                  <EmojiEmotionsIcon
+                    fontSize="large"
+                    onClick={() => setOpen((prevState) => !prevState)}
+                    onFocusOut={() => setOpen((prevState) => !prevState)}
+                    onBlur={() => setOpen((prevState) => !prevState)}
+                  />
                   <button className="chatSubmitButton" onClick={handleSubmit}>
                     Send
                   </button>
@@ -167,7 +182,11 @@ const Messenger = () => {
         </div>
         <div className="chatOnline">
           <div className="chatOnlineWrapper">
-            <ChatOnline onlineUsers={onlineUsers} currentId={_id} setCurrentChat={setCurrentChat} />
+            <ChatOnline
+              onlineUsers={onlineUsers}
+              currentId={_id}
+              setCurrentChat={setCurrentChat}
+            />
             {/* <FriendListWidget userId={_id}/> */}
           </div>
         </div>

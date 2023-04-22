@@ -228,6 +228,15 @@ const AccountMenu = ({postId, postUserId, picturePath, description}) => {
           <Avatar><ExploreSharpIcon/></Avatar>Boost Post
         </MenuItem>}
 
+        {postUserId === _id && <MenuItem onClick={() => {
+          handleClose()
+          navigate(`/edit-post/${postId}`,{state:{
+            picture:picturePath, desc:description, postID:postId
+          }})
+        }}>
+          <Avatar><ExploreSharpIcon/></Avatar>Edit Post
+        </MenuItem>}
+
         {postUserId !== _id && <MenuItem onClick={() => {
           handleClose()
           reportPost()
