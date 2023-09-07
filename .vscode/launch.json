@@ -13,7 +13,7 @@
             ],
             "program": "${workspaceFolder}\\server\\index.js",
             "env": {
-                "MONGO_URL": "mongodb+srv://vaishnav:8nov2000@cluster0.y1pyerm.mongodb.net/test",
+                "MONGO_URL": "mongodb+srv://vaishnav:<******>@cluster0.y1pyerm.mongodb.net/test",
                 "PORT": "3001",
                 "JWT_SECRET": "mysessionsecret"
             }
