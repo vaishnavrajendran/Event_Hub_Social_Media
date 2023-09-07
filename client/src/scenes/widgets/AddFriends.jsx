@@ -1,4 +1,3 @@
-// import { Button, Dialog, useMediaQuery, useTheme } from '@material-ui/core';
 import {
   Button,
   Dialog,
@@ -59,7 +58,6 @@ function AddFriends() {
     if(updatedUser){
       dispatch(setUser({data:updatedUser}));
       await axios.post(`http://localhost:3001/conversations/${_id}/${userId}/new`)
-      console.log('updatedUser',updatedUser);
     }
   }
 
@@ -92,7 +90,6 @@ function AddFriends() {
                   <Box
                     onClick={() => {
                       Navigate(`/profile/${data._id}`);
-                      console.log("data", data._id);
                     }}
                   >
                     <Typography

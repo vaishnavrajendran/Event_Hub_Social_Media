@@ -78,14 +78,6 @@ const Sidebar = ({children}) => {
                    ))
                }
            </div>
-           {/* <main>{toggled === 1 ? <Dashboard/>  : ""}
-           {toggled === 2 ? <HostRequests/> : ""}
-           {toggled === 3 ? <MainPage/> : ""}
-           {toggled === 4 ? <Comment/> : ""}
-           {toggled === 5 ? <Product/> : ""}
-           {toggled === 6 ? <ProductList/> : ""}
-           {console.log(toggled)}
-           </main> */}
            <main className={classes.scrollableContainer}>{children}</main>
         </div>
     );

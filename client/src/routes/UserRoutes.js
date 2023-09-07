@@ -6,7 +6,6 @@ import LoginPage from "scenes/loginPage";
 import ProfilePage from "scenes/profilePage";
 import BoostPost from "pages/BoostPost"
 import PaymentCompleted from "pages/PaymentCompleted"
-// import Chat from "pages/Chat"
 import InputFields from "pages/ScheduleAppointments/InputFields";
 import Messenger from "pages/messeger/Messenger";
 import EditUser from "pages/EditUser";

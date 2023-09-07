@@ -5,12 +5,10 @@ import SelectBoost from "./SelectBoost";
 
 const BoostPost = () => {
   const { state } = useLocation();
-  console.log("st:",state)
   let tax = 20;
   const [childData, setChildData] = useState("");
   const [amount, setAmount] = useState(120)
   const [purchase, setPurchase] = useState(false)
-  console.log("purchase",purchase);
   const dataFromChild = (data) => {
     setChildData(data);
     if(data == 50000) setAmount(120);
@@ -19,7 +17,6 @@ const BoostPost = () => {
     if(data == 300000) setAmount(4*120);
   }
   useEffect(() => {
-    console.log("pur",purchase);
   },[purchase]);
   return (
     <div>

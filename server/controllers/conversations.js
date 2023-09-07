@@ -32,7 +32,6 @@ export const getConversation = async (req, res) => {
 
 export const getTwoConversation = async (req, res) => {
     try {
-        console.log(req.params);
         const conversation = await Conversation.findOne({
             members:{ $all: [req.params.firstUserId, req.params.secondUserId]}
         })

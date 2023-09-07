@@ -1,5 +1,4 @@
 import Post from "../models/Post.js";
-// import Report from "../models/Report.js";
 import User from "../models/User.js";
 
 /* CREATE */
@@ -30,7 +29,6 @@ export const createPost = async (req, res) => {
 /* READ */
 export const getFeedPosts = async (req, res) => {
   try {
-    console.log("1");
     const { userId } = req.params;
     const post = await Post.find();
     const user = await User.findById(userId);
@@ -40,10 +38,8 @@ export const getFeedPosts = async (req, res) => {
     const reFilteredDocs = filteredDocs.filter(
       (posts) => {
         if(posts?.isViewed.length <= posts?.limit){
-          console.log("if");
           return posts.adminBlocked !== true && !posts?.isViewed?.includes(userId) && posts.isPaymentCompleted == 0
         } else {
-          console.log("else");
           return posts.adminBlocked !== true && !posts?.isViewed?.includes(userId)
         }
       } 
@@ -51,7 +47,6 @@ export const getFeedPosts = async (req, res) => {
     const sortedDocs = reFilteredDocs.sort(
       (a, b) => b.isPaymentCompleted - a.isPaymentCompleted
     );
-    console.log("sorted",sortedDocs);
     res.status(200).json(sortedDocs);
   } catch (err) {
     res.status(404).json({ message: err.message });
@@ -60,7 +55,6 @@ export const getFeedPosts = async (req, res) => {
 
 export const getUserPosts = async (req, res) => {
   try {
-    log("123")
     const { userId } = req.params;
     const post = await Post.find({ userId });
     res.status(200).json(post);
@@ -132,11 +126,9 @@ export const deleteComment = async (req, res) => {
       const findCommentIndex = await findPost.comments.findIndex(
         (id) => id._id == comm_id
       );
-      console.log(findCommentIndex, "indexx")
       if (findCommentIndex) {
         findPost.comments.splice(findCommentIndex, 1);
         await findPost.save();
-        console.log('find',findPost)
         res.status(200).json(findPost);
       }
     }
@@ -210,7 +202,6 @@ export const userViewed = async (req, res) => {
   const { id } = req.params;
   const findPosts = await Post.updateMany({isPaymentCompleted:1},
     {$addToSet:{isViewed:id}})
-  // console.log("find",findPosts);
 }
 
 export const editPost = async (req, res) => {

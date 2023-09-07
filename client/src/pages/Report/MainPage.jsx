@@ -1,10 +1,7 @@
 import { Box, useMediaQuery } from "@mui/material";
 import { useSelector } from "react-redux";
 import AdminNavbar from "scenes/AdminNavbar";
-// import UserWidget from "scenes/widgets/UserWidget";
 import PostsWrap from "components/Report/PostsWrap";
-// import AdvertWidget from "scenes/widgets/AdvertWidget";
-// import FriendListWidget from "scenes/widgets/FriendListWidget";
 
 const HomePage = () => {
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");

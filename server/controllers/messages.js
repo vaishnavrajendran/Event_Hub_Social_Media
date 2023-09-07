@@ -1,7 +1,6 @@
 import Message from "../models/Message.js";
 
 export const addMessage = async (req, res) => {
-    console.log(req.body);
     const newMessage = new Message(req.body);
     try {
         const savedMessage = await newMessage.save();

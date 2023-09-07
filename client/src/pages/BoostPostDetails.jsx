@@ -22,7 +22,6 @@ const BoostPostDetails = () => {
   const { userPosts } = useSelector((state) => state);
 
   const userPosted = userPosts.filter((post) => post.userId === user._id );
-  console.log(userPosted);
 
   return (
     <div>
@@ -79,17 +78,6 @@ const BoostPostDetails = () => {
                     />
                   </td>
                   <td class="px-6 py-4">
-                    {/* <div class="flex gap-2">
-                  <span class="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-600">
-                    Design
-                  </span>
-                  <span class="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-2 py-1 text-xs font-semibold text-indigo-600">
-                    Product
-                  </span>
-                  <span class="inline-flex items-center gap-1 rounded-full bg-violet-50 px-2 py-1 text-xs font-semibold text-violet-600">
-                    Develop
-                  </span>
-                </div> */}
                   </td>
                   <td class="px-6 py-4">
                     <div class="flex justify-end gap-4">

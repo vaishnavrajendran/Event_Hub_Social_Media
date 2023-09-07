@@ -63,7 +63,6 @@ let mob;
     const formData = new FormData()
     for(let value in values){
       if(value === 'picture'){
-        console.log('userUrl',userUrl)
         formData.append("picturePath",userUrl.toString())
       } else { 
         formData.append(value, values[value])
@@ -86,26 +85,10 @@ let mob;
     })
 
     if (data) {
-      console.log('datasssss',data);
       dispatch(setUser({data:data}))
       onSubmitProps.resetForm();
     }
     
-
-    // const savedUserResponse = await fetch(
-    //     `http://localhost:3001/users/${_id}/update`,
-    //   {
-    //     method: "PATCH",
-    //     headers: { Authorization: `Bearer ${token}` },
-    //     body: formData,
-    //   }
-    // ).catch((err)=> {
-    //   console.log(err.message)
-    // })
-    // const savedUser = await savedUserResponse.json();
-    // onSubmitProps.resetForm();
-
-
   }
 
   const picCarrier = (pic) => {
@@ -114,39 +97,13 @@ let mob;
         storage.ref('images').child(pic.name).getDownloadURL()
         .then(function(url) {
           setUserUrl(url.toString())
-          console.log("111",url)
         })
       })
   }
 
-
-//     const loggedIn = await loggedInResponse.json();
-//     onSubmitProps.resetForm();
-//     if (loggedIn) {
-//       console.log('log',loggedIn)
-//       if(loggedIn ==='Invalid credentials.')
-//         {setExcep(true)}
-//       dispatch(
-//         setLogin({
-//           user: loggedIn.user,
-//           token: loggedIn.token,
-//           allUsers: loggedIn.allUsers
-//         })
-//       );
-//       navigate("/home");
-//     }
-//   };
-
   const handleFormSubmit = async (values, onSubmitProps) => {
-      console.log('values',values)
     register(values, onSubmitProps)
   };
-
-  const mobileSetting = (val) => {
-    mob = val;
-    console.log('state',mob);
-  }
-
 
   return (
     <Formik

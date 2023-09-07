@@ -81,9 +81,6 @@ const Form = () => {
   let mob;
   let OTP;
 
-  {
-    /* OTP CODE */
-  }
   const generateRecaptcha = () => {
     window.recaptchaVerifier = new RecaptchaVerifier(
       "recaptcha-container",
@@ -110,11 +107,8 @@ const Form = () => {
         .then((result) => {
           // User signed in successfully
           setSuccess(false);
-          // const user = result.user;
         })
         .catch((error) => {
-          // User couldn't sign in (bad verification code?)
-          // ...
           console.log("User couldn't sign in", error.message);
         });
     }
@@ -158,18 +152,6 @@ const Form = () => {
         console.log(error.message);
       });
 
-    // const savedUserResponse = await fetch(
-    //   "http://localhost:3001/auth/register",
-    //   {
-    //     method: "POST",
-    //     body: formData,
-    //   }
-    // ).catch((err)=> {
-    //   console.log(err.message)
-    // })
-    // const savedUser = await savedUserResponse.json();
-    // onSubmitProps.resetForm();
-
     if (data) {
       setPageType("login");
       onSubmitProps.resetForm();
@@ -187,7 +169,6 @@ const Form = () => {
           .getDownloadURL()
           .then(function (url) {
             setUserUrl(url.toString());
-            console.log("111", url);
           });
       });
   };
@@ -203,7 +184,6 @@ const Form = () => {
     onSubmitProps.resetForm();
     if (loggedIn) {
       setLoading(false);
-      console.log("log", loggedIn);
       if (loggedIn.msg === "Invalid credentials." || "User does not exist. ") {
         setExcep(true);
       }
@@ -233,7 +213,6 @@ const Form = () => {
 
   const mobileSetting = (val) => {
     mob = val;
-    console.log("state", mob);
   };
 
   return (

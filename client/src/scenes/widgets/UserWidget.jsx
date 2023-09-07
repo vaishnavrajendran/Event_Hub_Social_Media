@@ -1,5 +1,4 @@
 import {
-  // ManageAccountsOutlined,
   EditOutlined,
   LocationOnOutlined,
   WorkOutlineOutlined,
@@ -30,8 +29,6 @@ const UserWidget = ({ userId, picturePath }) => {
   const logLocation = useSelector((state) => state.user.location)
   const { status } = useSelector(state => state.user)
   const { isHost } = useSelector(state => state.user)
-  // const currentUser = useSelector((state) => state.user.firstName)
-  // const currentUserLastName = useSelector((state) => state.user.lastName)
 
   const getUser = async () => {
     const response = await fetch(`http://localhost:3001/users/${userId}`, {
@@ -59,9 +56,6 @@ const UserWidget = ({ userId, picturePath }) => {
     impressions,
     friends,
   } = user;
-
-  // const iscurrentUser = firstName === currentUser;
-  // const iscurrentUserLastName = lastName === currentUserLastName;
 
   return (
     <WidgetWrapper>

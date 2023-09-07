@@ -82,7 +82,6 @@ export default function CheckoutForm({ postId, amount }) {
   const paymentElementOptions = {
     layout: "tabs",
   };
-  console.log('email',email)
 
   return (
     <form id="payment-form" onSubmit={handleSubmit}>

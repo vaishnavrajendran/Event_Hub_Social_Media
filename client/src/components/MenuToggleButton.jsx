@@ -97,40 +97,9 @@ const AccountMenu = ({postId, postUserId, picturePath, description}) => {
     }).catch((error) => console.log(error.message))
     const report = await response.json();
     if(report){
-      console.log("report",report)
       dispatch(setPost({post:report}));
     }
   }
-  // const config = {
-  //   headers: {
-  //       Authorization: `Bearer ${token}`,
-  //       'Content-Type': 'application/json'
-  //   }
-  // }
-  // const { data } = await axios.post(
-  //   `http://localhost:3001/posts/${postId}/report`,
-  //   config
-  // ).catch((error) => {
-  //   console.log(error.message)
-  // })
-  // if(data){
-  //   dispatch(setReport({data:data}));
-  // }
-
-  // const patchFriend = async () => {
-  //   const response = await fetch(
-  //     `http://localhost:3001/users/${_id}/${friendId}`,
-  //     {
-  //       method: "PATCH",
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //         "Content-Type": "application/json",
-  //       },
-  //     }
-  //   );
-  //   const data = await response.json();
-  //   dispatch(setFriends({ friends: data }));
-  // };
 
   return (
     <React.Fragment>

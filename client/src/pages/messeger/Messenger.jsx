@@ -11,8 +11,6 @@ import EmojiPicker from "emoji-picker-react";
 import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
 import { EmojiStyle } from 'emoji-picker-react';
 
-// import FriendListWidget from "scenes/widgets/FriendListWidget";
-
 const Messenger = () => {
   const [conversations, setConversations] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
@@ -52,8 +50,6 @@ const Messenger = () => {
         return matchedObj !== undefined;
       });
       setOnlineUsers(matchedArray);
-      // setOnlineUsers(user.friends.filter((f) => {users.some((u) => u.userId === f._id )
-      // }));
     });
   }, [user]);
 
