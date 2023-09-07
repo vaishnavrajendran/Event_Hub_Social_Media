@@ -12,19 +12,10 @@ import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { deletePosts, setUser } from "state/index";
 import { ManageAccountsOutlined } from "@mui/icons-material";
 import EditUserDialog from '../components/EditUserDialog'
 
 const ManageUser = ({ postId, postUserId }) => {
-  const dispatch = useDispatch();
-  const posts = useSelector((state) => state.posts);
-  const token = useSelector((state) => state.token);
-  // const { friends } = useSelector(state => state.user)
-  // const { requested } = useSelector(state => state.user)
-  const user = useSelector((state) => state.user);
-
-  const { _id } = useSelector((state) => state.user);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -34,22 +25,6 @@ const ManageUser = ({ postId, postUserId }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-
-  // const patchFriend = async () => {
-  //   const response = await fetch(
-  //     `http://localhost:3001/users/${_id}/${friendId}`,
-  //     {
-  //       method: "PATCH",
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //         "Content-Type": "application/json",
-  //       },
-  //     }
-  //   );
-  //   const data = await response.json();
-  //   dispatch(setFriends({ friends: data }));
-  // };
 
   return (
     <React.Fragment>
